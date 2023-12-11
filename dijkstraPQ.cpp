@@ -6,18 +6,21 @@
 using namespace std;
 
 // Structure to represent an edge in the graph
-struct Edge {
+struct Edge
+{
     int destination;
     int weight;
 };
 
 // Structure to represent a vertex and its adjacency list
-struct Vertex {
+struct Vertex
+{
     vector<Edge> adjList;
 };
 
 // Function to perform Dijkstra's algorithm using adjacency lists
-void dijkstra(vector<Vertex>& graph, int src) {
+void dijkstra(vector<Vertex> &graph, int src)
+{
     int V = graph.size();
     vector<int> dist(V, INT_MAX);  // Array to store the distance from the source
     vector<bool> sptSet(V, false); // Array to track vertices included in the shortest path tree
@@ -31,22 +34,32 @@ void dijkstra(vector<Vertex>& graph, int src) {
     // Enqueue the source vertex with its distance
     pq.push({0, src});
 
-    while (!pq.empty()) {
+    while (!pq.empty())
+    {
         // Extract the vertex with the minimum distance
         int u = pq.top().second;
         pq.pop();
+        // Early stopping condition
+        if (dist[u] == INT_MAX)
+        {
+            // If the minimum distance is still infinity, no relaxation is possible.
+            // This means that the remaining vertices are not reachable from the source.
+            break;
+        }
 
         // Mark the picked vertex as processed
         sptSet[u] = true;
 
         // Update distances of adjacent vertices
-        for (const Edge& edge : graph[u].adjList) {
+        for (const Edge &edge : graph[u].adjList)
+        {
             int v = edge.destination;
             int weight = edge.weight;
 
             // Update dist[v] only if it is not in sptSet, and the total weight
             // of the path from src to v through u is smaller than the current value of dist[v]
-            if (!sptSet[v] && dist[u] != INT_MAX && dist[u] + weight < dist[v]) {
+            if (!sptSet[v] && dist[u] != INT_MAX && dist[u] + weight < dist[v])
+            {
                 dist[v] = dist[u] + weight;
 
                 // Enqueue the updated distance and vertex to the priority queue
@@ -61,7 +74,8 @@ void dijkstra(vector<Vertex>& graph, int src) {
         cout << i << " \t\t" << dist[i] << endl;
 }
 
-int main() {
+int main()
+{
     // Number of vertices in the graph
     int V = 9;
 

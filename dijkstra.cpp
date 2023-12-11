@@ -9,18 +9,20 @@ using namespace std;
 // from the set of vertices not yet included in the shortest path tree (not visited.)
 // returns back the index of the vertex that is the minimum distance away from the
 // source and not yet in the shortest path tree.
-int minDistance(int dist[], bool sptSet[]) {
+int minDistance(int dist[], bool sptSet[])
+{
     int min = INT_MAX;
     int min_index;
     for (int v = 0; v < V; v++)
         if (sptSet[v] == false && dist[v] <= min)
-            min = dist[v], min_index = v; //store the min and also min index.
-    return min_index;
+            min = dist[v], min_index = v; // store the min and also min index.
+    return min_index;                     // we want to return the minimum vertex not the minimum value.
 }
 
 // A utility function to print the constructed distance array
 // this is the end result of dijkstra's algo give min dist of each vertex from source vertex.
-void printSolution(int dist[]) {
+void printSolution(int dist[])
+{
     cout << "Vertex \t Distance from Source\n";
     for (int i = 0; i < V; i++)
         cout << i << " \t\t" << dist[i] << endl;
@@ -28,16 +30,17 @@ void printSolution(int dist[]) {
 
 // Function that implements Dijkstra's single source shortest path algorithm
 // for a graph represented using adjacency matrix representation
-void dijkstra(int graph[V][V], int src) {
-    int dist[V]; // The output array. dist[i] will hold the shortest distance from
-                 // src to i
-                //i is any vertex.
+void dijkstra(int graph[V][V], int src)
+{
+    int dist[V];    // The output array. dist[i] will hold the shortest distance from
+                    // src to i
+                    // i is any vertex.
     bool sptSet[V]; // sptSet[i] will be true if vertex i is included in shortest
                     // path tree or shortest distance from src to i is finalized
 
     // Initialize all distances as INFINITE and sptSet[] as false
-    //this is step 1 of the dijkstra's algo.
-    //initially all the nodes are not visited and all nodes are at infinity except source.
+    // this is step 1 of the dijkstra's algo.
+    // initially all the nodes are not visited and all nodes are at infinity except source.
     for (int i = 0; i < V; i++)
         dist[i] = INT_MAX, sptSet[i] = false;
 
@@ -45,12 +48,22 @@ void dijkstra(int graph[V][V], int src) {
     dist[src] = 0;
 
     // Find the shortest path for all vertices
-    for (int count = 0; count < V - 1; count++) {
+    // algo runs and checks for V-1 time.
+    for (int count = 0; count < V - 1; count++)
+    {
         // Pick the minimum distance vertex from the set of vertices not yet
         // processed.
         // u is always equal to src in the first iteration.
         int u = minDistance(dist, sptSet); // initially src will get returned back
                                            // because of line 45 where we set dist[src] = 0;
+
+        // Early stopping condition
+        if (dist[u] == INT_MAX)
+        {
+            // If the minimum distance is still infinity, no relaxation is possible.
+            // This means that the remaining vertices are not reachable from the source.
+            break;
+        }
 
         // Mark the picked vertex as processed
         sptSet[u] = true;
@@ -65,20 +78,21 @@ void dijkstra(int graph[V][V], int src) {
                 dist[u] + graph[u][v] < dist[v])
                 dist[v] = dist[u] + graph[u][v];
 
-            //!sptSet[v] checks if it is already visited or not.
-            //graph[u][v] checks if there exits an edge.
-            //dist[u] checks if it is not going to give any arithmetic error.
-            //note that it is dist[u] not dist[v].
-            //then the dist[u]+graph[u][v]<dist[v] is checking if it can be relaxed or not.
-            //relax means to update if there is a shorter path.
-            //if it can be relaxed then it is updated.
+        //! sptSet[v] checks if it is already visited or not.
+        // graph[u][v] checks if there exits an edge.
+        // dist[u] checks if it is not going to give any arithmetic error.
+        // note that it is dist[u] not dist[v].
+        // then the dist[u]+graph[u][v]<dist[v] is checking if it can be relaxed or not.
+        // relax means to update if there is a shorter path.
+        // if it can be relaxed then it is updated.
     }
 
     // Print the constructed distance array
     printSolution(dist);
 }
 
-int main() {
+int main()
+{
     /* Let us create the example graph discussed above */
     int graph[V][V] = {{0, 4, 0, 0, 0, 0, 0, 8, 0},
                        {4, 0, 8, 0, 0, 0, 0, 11, 0},
